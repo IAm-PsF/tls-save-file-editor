@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <title>The Last Starship — Save File Editor (v28)</title>
     
-    <!-- Call your existing CSS file -->
+    <!-- This calls your existing CSS file (no big CSS block here) -->
     <link rel="stylesheet" href="./assets/index.ed6bea94.css">
     
+    <!-- Small extra styles for buttons and layout -->
     <style>
         body { margin: 40px; font-family: Arial, sans-serif; }
         h1 { color: #1eaedb; }
@@ -94,20 +95,14 @@
 
                     const newObj = {};
 
-                    // Handle array keys like "[i 0]"
+                    // Special fix for array keys like "[i 0]"
                     if (key.startsWith("[i ")) {
-                        if (Array.isArray(parent)) {
-                            parent.push(newObj);
-                        } else {
-                            // If parent is not array, make it one
-                            const arr = [];
-                            for (let k in parent) {
-                                if (parent.hasOwnProperty(k)) arr.push(parent[k]);
-                            }
-                            parent = arr;
+                        if (!Array.isArray(parent)) {
+                            const arr = Object.values(parent);
                             stack[stack.length - 1] = arr;
-                            parent.push(newObj);
+                            parent = arr;
                         }
+                        parent.push(newObj);
                     } else {
                         if (parent[key] === undefined) {
                             parent[key] = newObj;
