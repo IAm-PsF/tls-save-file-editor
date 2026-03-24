@@ -57,7 +57,10 @@
                 if (token === "BEGIN") {
                     i++;
                     // Handle keys like "[i 0]" or normal keys
-                    let key = tokens[i].replace(/^"|"$/g, '');
+                    let key = tokens[i];
+                    if (key.startsWith('"') && key.endsWith('"')) {
+                        key = key.slice(1, -1);
+                    }
                     i++;
                     const newObj = {};
                     if (Array.isArray(stack[stack.length-1])) {
