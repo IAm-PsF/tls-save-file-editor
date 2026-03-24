@@ -1,160 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>The Last Starship — Save File Editor (v28)</title>
-    
-    <!-- This calls your existing CSS file (no big CSS block here) -->
-    <link rel="stylesheet" href="./assets/index.ed6bea94.css">
-    
-    <!-- Small extra styles for buttons and layout -->
-    <style>
-        body { margin: 40px; font-family: Arial, sans-serif; }
-        h1 { color: #1eaedb; }
-        button { 
-            padding: 12px 24px; 
-            font-size: 16px; 
-            margin: 10px 5px; 
-            background: #33c3f0; 
-            color: white; 
-            border: none; 
-            border-radius: 4px; 
-            cursor: pointer; 
-        }
-        button:hover { background: #1eaedb; }
-        input[type="file"] { margin: 20px 0; }
-        pre { 
-            background: #f8f8f8; 
-            padding: 15px; 
-            border: 1px solid #ddd; 
-            overflow: auto; 
-            max-height: 600px; 
-            font-family: monospace; 
-            white-space: pre-wrap; 
-        }
-        .error { 
-            color: red; 
-            background: #fee; 
-            padding: 10px; 
-            border: 1px solid red; 
-            border-radius: 4px; 
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>The Last Starship — Save File Editor (SaveVersion 28)</h1>
-        <p>Click below to open a .space save file. GridMap is automatically skipped.</p>
-
-        <input type="file" id="fileInput" accept=".space">
-        <br><br>
-        <button onclick="downloadEdited()">Download Edited Save</button>
-
-        <h2>Parsed Save Data</h2>
-        <pre id="output">Load a file to see the data here...</pre>
-    </div>
-
-    <script>
-        let parsedData = {};
-
-        document.getElementById('fileInput').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(ev) {
-                try {
-                    parsedData = parseSaveFile(ev.target.result);
-                    document.getElementById('output').textContent = JSON.stringify(parsedData, null, 2);
-                    console.log("✅ Loaded successfully!");
-                } catch(err) {
-                    document.getElementById('output').innerHTML = `<div class="error">Error: ${err.message}</div>`;
-                    console.error(err);
-                }
-            };
-            reader.readAsText(file);
-        });
-
-        function parseSaveFile(text) {
-            const tokens = text.split(/\s+/).filter(Boolean);
-            let i = 0;
-            const result = {};
-            const stack = [result];
-
-            while (i < tokens.length) {
-                let token = tokens[i];
-
-                if (token === "BEGIN") {
-                    i++;
-                    let key = tokens[i];
-                    if (key.startsWith('"') && key.endsWith('"')) key = key.slice(1, -1);
-                    i++;
-
-                    let parent = stack[stack.length - 1];
-                    if (!parent) parent = result;
-
-                    const newObj = {};
-
-                    // Special fix for array keys like "[i 0]"
-                    if (key.startsWith("[i ")) {
-                        if (!Array.isArray(parent)) {
-                            const arr = Object.values(parent);
-                            stack[stack.length - 1] = arr;
-                            parent = arr;
-                        }
-                        parent.push(newObj);
-                    } else {
-                        if (parent[key] === undefined) {
-                            parent[key] = newObj;
-                        } else if (Array.isArray(parent[key])) {
-                            parent[key].push(newObj);
-                        } else {
-                            parent[key] = [parent[key], newObj];
-                        }
-                    }
-                    stack.push(newObj);
-                } else if (token === "END") {
-                    if (stack.length > 1) stack.pop();
-                    i++;
-                } else if (token === "SaveVersion") {
-                    i++;
-                    if (stack.length > 0) stack[stack.length-1][token] = parseInt(tokens[i], 10);
-                    i++;
-                } else if (token === "BEGIN" && tokens[i+1] === "GridMap") {
-                    i += 2;
-                    let depth = 1;
-                    while (i < tokens.length && depth > 0) {
-                        if (tokens[i] === "BEGIN") depth++;
-                        else if (tokens[i] === "END") depth--;
-                        i++;
-                    }
-                } else {
-                    const key = token;
-                    i++;
-                    let val = tokens[i];
-                    if (val && val.startsWith('"')) val = val.slice(1, -1);
-                    else if (val && !isNaN(val)) val = parseFloat(val);
-                    if (stack.length > 0) stack[stack.length-1][key] = val;
-                    i++;
-                }
-            }
-            return result;
-        }
-
-        function downloadEdited() {
-            if (Object.keys(parsedData).length === 0) {
-                alert("Please load a file first!");
-                return;
-            }
-            const text = JSON.stringify(parsedData, null, 2);
-            const blob = new Blob([text], {type: 'text/plain'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'edited-save.space';
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-    </script>
-</body>
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" href="./favicon.ico" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link href="//fonts.googleapis.com/css?family=Orbitron:400,300,600" rel="stylesheet" type="text/css" />
+        <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css" />
+        <title>The Last Starship -- Save File Editor</title>
+        <link rel="stylesheet" href="./assets/index.ed6bea94.css">
+    </head>
+    <body>
+        <div class="container" id="app"></div>
+        
+        <script type="module" crossorigin src="./assets/index.f5103e52.js"></script>
+    </body>
 </html>
