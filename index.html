@@ -6,16 +6,16 @@
     <style>
         body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
         h1 { color: #1eaedb; }
-        button { padding: 12px 24px; font-size: 16px; margin: 10px 5px; }
+        button { padding: 12px 24px; font-size: 16px; margin: 10px 5px; background: #33c3f0; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #1eaedb; }
         input[type="file"] { margin: 20px 0; }
-        pre { background: #f8f8f8; padding: 15px; border: 1px solid #ddd; overflow: auto; max-height: 600px; }
-        .error { color: red; font-weight: bold; }
+        pre { background: #f8f8f8; padding: 15px; border: 1px solid #ddd; overflow: auto; max-height: 600px; font-family: monospace; }
+        .error { color: red; background: #fee; padding: 10px; border: 1px solid red; border-radius: 4px; }
     </style>
 </head>
 <body>
     <h1>The Last Starship — Save File Editor (SaveVersion 28)</h1>
-    <p>Click the button below to open a .space save file.<br>
-    The huge GridMap section is automatically skipped.</p>
+    <p>Click below to open a .space save file. GridMap is automatically skipped.</p>
 
     <input type="file" id="fileInput" accept=".space">
     <br><br>
@@ -38,7 +38,7 @@
                     document.getElementById('output').textContent = JSON.stringify(parsedData, null, 2);
                     console.log("✅ Loaded successfully!");
                 } catch(err) {
-                    document.getElementById('output').innerHTML = `<span class="error">Error: ${err.message}</span>`;
+                    document.getElementById('output').innerHTML = `<div class="error">Error: ${err.message}</div>`;
                     console.error(err);
                 }
             };
@@ -52,7 +52,8 @@
             const stack = [result];
 
             while (i < tokens.length) {
-                const token = tokens[i];
+                let token = tokens[i];
+
                 if (token === "BEGIN") {
                     i++;
                     let key = tokens[i].replace(/^"|"$/g, '');
@@ -61,7 +62,9 @@
                     if (Array.isArray(stack[stack.length-1])) {
                         stack[stack.length-1].push(newObj);
                     } else {
-                        stack[stack.length-1][key] = newObj;
+                        if (!stack[stack.length-1][key]) stack[stack.length-1][key] = newObj;
+                        else if (Array.isArray(stack[stack.length-1][key])) stack[stack.length-1][key].push(newObj);
+                        else stack[stack.length-1][key] = [stack[stack.length-1][key], newObj];
                     }
                     stack.push(newObj);
                 } else if (token === "END") {
@@ -72,6 +75,7 @@
                     stack[stack.length-1][token] = parseInt(tokens[i], 10);
                     i++;
                 } else if (token === "BEGIN" && tokens[i+1] === "GridMap") {
+                    // Skip GridMap
                     i += 2;
                     let depth = 1;
                     while (i < tokens.length && depth > 0) {
