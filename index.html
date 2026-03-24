@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>The Last Starship — Save File Editor (v28)</title>
     <style>
-        /* === YOUR FULL CSS (unchanged) === */
+        /* Your full CSS - unchanged */
         .expandable[data-v-331aa141]{padding:.25rem 1rem;display:inline-flex;align-items:center}
         .expandable.expanded[data-v-331aa141]:before{transform:rotate(90deg)}
         .expandable[data-v-331aa141]:before{width:2.3em;line-height:0;content:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,1%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='1' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");transition:transform .35s ease;transform-origin:40% 50%}
@@ -70,7 +70,7 @@
         .bad-version[data-v-5d0628f8]{border:1px solid #f0c333;border-radius:4px;line-height:2em;padding:2px 5px;margin-bottom:1em}
         .bad-file[data-v-5d0628f8]{border:1px solid #f03333;border-radius:4px;line-height:2em;padding:2px 5px;margin-bottom:1em}
 
-        /* Normalize + Skeleton */
+        /* Normalize */
         html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}article,aside,details,figcaption,figure,footer,header,hgroup,main,menu,nav,section,summary{display:block}audio,canvas,progress,video{display:inline-block;vertical-align:baseline}audio:not([controls]){display:none;height:0}[hidden],template{display:none}a{background-color:transparent}a:active,a:hover{outline:0}abbr[title]{border-bottom:1px dotted}b,strong{font-weight:700}dfn{font-style:italic}h1{font-size:2em;margin:.67em 0}mark{background:#ff0;color:#000}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sup{top:-.5em}sub{bottom:-.25em}img{border:0}svg:not(:root){overflow:hidden}figure{margin:1em 40px}hr{-moz-box-sizing:content-box;box-sizing:content-box;height:0}pre{overflow:auto}code,kbd,pre,samp{font-family:monospace,monospace;font-size:1em}button,input,optgroup,select,textarea{color:inherit;font:inherit;margin:0}button{overflow:visible}button,select{text-transform:none}button,html input[type=button],input[type=reset],input[type=submit]{-webkit-appearance:button;cursor:pointer}button[disabled],html input[disabled]{cursor:default}button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}input{line-height:normal}input[type=checkbox],input[type=radio]{box-sizing:border-box;padding:0}input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{height:auto}input[type=search]{-webkit-appearance:textfield;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;box-sizing:content-box}input[type=search]::-webkit-search-cancel-button,input[type=search]::-webkit-search-decoration{-webkit-appearance:none}fieldset{border:1px solid #c0c0c0;margin:0 2px;padding:.35em .625em .75em}legend{border:0;padding:0}textarea{overflow:auto}optgroup{font-weight:700}table{border-collapse:collapse;border-spacing:0}td,th{padding:0}
         .container{position:relative;width:100%;max-width:1080px;margin:0 auto;padding:0 20px;box-sizing:border-box}
     </style>
@@ -123,9 +123,9 @@
                     let key = tokens[i];
                     if (key.startsWith('"') && key.endsWith('"')) key = key.slice(1, -1);
                     i++;
-                    const newObj = {};
 
                     const parent = stack[stack.length - 1];
+                    const newObj = {};
 
                     if (Array.isArray(parent)) {
                         parent.push(newObj);
