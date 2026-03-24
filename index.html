@@ -56,15 +56,20 @@
 
                 if (token === "BEGIN") {
                     i++;
+                    // Handle keys like "[i 0]" or normal keys
                     let key = tokens[i].replace(/^"|"$/g, '');
                     i++;
                     const newObj = {};
                     if (Array.isArray(stack[stack.length-1])) {
                         stack[stack.length-1].push(newObj);
                     } else {
-                        if (!stack[stack.length-1][key]) stack[stack.length-1][key] = newObj;
-                        else if (Array.isArray(stack[stack.length-1][key])) stack[stack.length-1][key].push(newObj);
-                        else stack[stack.length-1][key] = [stack[stack.length-1][key], newObj];
+                        if (!stack[stack.length-1][key]) {
+                            stack[stack.length-1][key] = newObj;
+                        } else if (Array.isArray(stack[stack.length-1][key])) {
+                            stack[stack.length-1][key].push(newObj);
+                        } else {
+                            stack[stack.length-1][key] = [stack[stack.length-1][key], newObj];
+                        }
                     }
                     stack.push(newObj);
                 } else if (token === "END") {
