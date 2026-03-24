@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <title>The Last Starship — Save File Editor (v28)</title>
     
-    <!-- Load your existing CSS file -->
+    <!-- This calls your existing CSS file -->
     <link rel="stylesheet" href="./assets/index.ed6bea94.css">
     
+    <!-- Small extra styles for buttons and layout -->
     <style>
-        /* Small extra styles for the simple editor */
         body { margin: 40px; font-family: Arial, sans-serif; }
         h1 { color: #1eaedb; }
         button { 
@@ -90,7 +90,9 @@
                     if (key.startsWith('"') && key.endsWith('"')) key = key.slice(1, -1);
                     i++;
 
-                    const parent = stack[stack.length - 1];
+                    let parent = stack[stack.length - 1];
+                    if (!parent) parent = result;
+
                     const newObj = {};
 
                     if (Array.isArray(parent)) {
